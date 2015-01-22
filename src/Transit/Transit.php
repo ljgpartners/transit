@@ -137,13 +137,29 @@ class Transit {
             }
         }
 
+        function endsWith($haystack, $needle) {
+            // search forward starting from end minus needle length characters
+            return $needle === "" || strpos($haystack, $needle, strlen($haystack) - strlen($needle)) !== FALSE;
+        }
+
+        $retina = false;
+        if(endsWith($name, "@2x")) { 
+            $name = explode("@2x", $name);
+            $name = $name[0].$name[1];
+            $retina = true;
+        }
+
         $target = $this->_directory . $name . $ext;
 
         if (!$overwrite) {
             $no = 1;
 
             while (file_exists($target)) {
-                $target = sprintf('%s%s-%s%s', $this->_directory, $name, $no, $ext);
+                if ($retina) {
+                    $target = sprintf('%s%s-%s@2x%s', $this->_directory, $name, $no, $ext);
+                } else {
+                    $target = sprintf('%s%s-%s%s', $this->_directory, $name, $no, $ext);
+                }
                 $no++;
             }
         }
